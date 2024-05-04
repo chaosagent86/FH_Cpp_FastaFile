@@ -7,8 +7,6 @@
 //using namespace std;
 
 /*********************************************
- * ToDO: Argumente erstellen um FASTA File einlesen zu können
- * ToDO: Hilfetext als Argument erstellen --help
  * ToDO: Liste hinterlegen, was spezifisch für DNA Sequenzen ist
  * ToDO: Liste hinterlegen, was spezifisch für Protein Sequenzen ist
  * ToDO: Liste hinterlegen, was bei DNA und bei Protein-Sequenzen vorkommen kann

@@ -1,19 +1,19 @@
 #include <iostream> //standard
-#include <fstream>  //file specific
 #include <vector>
+#include <fstream>
+#include <filesystem>
 
-
-// https://stackoverflow.com/questions/35251635/fasta-reader-written-in-c
+#include "FASTA_Analysis.h"
 
 /*********************************************
 -) Implementieren Sie ein nichttriviales objektorientiertes Datenmodell.  Wählen Sie aus einem der angefügten Beispiele.
 -) Achten Sie darauf die Klassen vollständig zu implementieren: notwendige Konstruktoren und verwandte Funktionen, Getter, Setter und Vergleichsoperatoren.
 -) Achten Sie, dass bei Parametern  unnötige Kopien vermieden werden.
--) Teilen Sie den Code in mehrere Kompiliereinheiten (.cpp) und Includefiles(.h) ein.
+-) Teilen Sie den Code in mehrere Kompilier-Einheiten (.cpp) und Include-Files(.h) ein.
 -) Wenn möglich, bauen Sie eine einfache Klassenhierarchie ein.
 -) Wenn möglich, bauen Sie Ein-, Ausgabe in eine Datei ein.
 -) Wenn möglich, implementieren Sie eine kleinen Algorithmus.
--) Wenn möglich, implmentieren Sie ein einfaches Errorhandling.
+-) Wenn möglich, implementeren Sie ein einfaches Errorhandling.
  */
 
 struct FastaSequence {
@@ -21,11 +21,13 @@ struct FastaSequence {
     std::string sequence;
 };
 
-void show_help(); //help text in case of error
+void show_help();
 std::vector<FastaSequence> readDataFile(const std::string& filename);
+std::string getFileExtension(const std::string& filename);
+void const showFileExtensionText(const std::string &fileExtension);
 
-//******************************************************************
 int main(int argc, char *argv[]) {
+
     if (argc < 2) {
         std::cerr << "\nError: Missing arguments!" << std::endl;
         show_help();
@@ -38,17 +40,42 @@ int main(int argc, char *argv[]) {
         }
         if(std::string(argv[i]) == "--file") {
             std::string filename = argv[i+1];
-            std::vector<FastaSequence> sequences = readDataFile(filename);
-            for (const auto& seq : sequences) {
-                std::cout << "Header: " << seq.header << std::endl;
-                std::cout << "Sequence: " << seq.sequence << std::endl;
-            }
-        }
-        // show what was read in
 
-    }
-return 0;
+            std::cout << "Filename: " << filename << std::endl;
+            std::string fileExtension = getFileExtension(filename);
+            std::cout << "File Extension detected: " << fileExtension << std::endl;
+
+            if (fileExtension == "fasta" || fileExtension == "fas" || fileExtension == "fa") {
+                showFileExtensionText(fileExtension);
+            } else if (fileExtension == "ffn") {
+                showFileExtensionText(fileExtension);
+            } else if (fileExtension == "faa" || fileExtension == "mpfa") {
+                showFileExtensionText(fileExtension);
+            } else if (fileExtension == "frn") {
+                showFileExtensionText(fileExtension);
+            } else {
+                std::cerr << "File extension not supported!" << std::endl;
+                show_help();
+                return -1;
+            }
+//            std::vector<FastaSequence> sequences = readDataFile(filename);
+//            for (const auto& seq : sequences) {
+//                std::cout << "Header: " << seq.header << std::endl;
+//                std::cout << "Sequence: " << seq.sequence << std::endl;
+        } // end if-statement
+    } // end for schleife
+    return 0;
 }
+
+//******************************************************************
+std::string getFileExtension(const std::string& filename) {
+    size_t pos = filename.find_last_of('.');
+    if (pos != std::string::npos) {
+        return filename.substr(pos + 1);
+    }
+    return ""; // Keine Dateiendung gefunden
+}
+
 
 //******************************************************************
 std::vector<FastaSequence> readDataFile(const std::string& filename) {
@@ -87,35 +114,35 @@ std::vector<FastaSequence> readDataFile(const std::string& filename) {
 }
 
 //******************************************************************
-//void open_file(std::string &i_filename)
-//{
-//    std::string line;
-//    std::string id;
-//    std::string sequence;
-//
-//    std::ifstream datafile;
-//    datafile.open(i_filename);
-//
-//    if(datafile.is_open())
-//    {
-//        std::string line;
-//        while (getline(datafile, line))
-//        {
-//            std::cout << "Line read: " << line << std::endl;
-//        }
-//    }
-//    else
-//    {
-//        std::cerr << "The file provided couldn't be opened!" << std::endl;
-//    }
-//    datafile.close();
-//}
-
-//******************************************************************
 void show_help()
 {
     std::cout << "*************************************************************" << std::endl;
     std::cout << "--help \t\t\t shows this help" << std::endl;
     std::cout << "--file <filename> \t attach filename (no wildcards!)" << std::endl;
+    std::cout << "\t\tAllowed file extensions:" << std::endl;
+    std::cout << "\t\t\t-) *.fasta / *.fas *.fa (detection possible what's inside!)" << std::endl;
+    std::cout << "\t\t\t-) *.ffn (nucleic acids supposed)" << std::endl;
+    std::cout << "\t\t\t-) *.faa / *.mpfa (amino acids supposed)" << std::endl;
+    std::cout << "\t\t\t-) *.frn (ribosomic nucleic acids supposed)" << std::endl;
     std::cout << "*************************************************************" << std::endl  << std::endl;
+}
+
+//******************************************************************
+void const showFileExtensionText(const std::string &fileExtension) {
+    if (fileExtension == "fasta" || fileExtension == "fas" || fileExtension == "fa") {
+        std::cout << "File Extension detected: " << fileExtension << std::endl;
+        std::cout << "The following File extensions are generally considered to contain all possible\n"
+                     "to contain all possible forms of acids: *.fasta / *.fas / *.fa\n"
+                     "including nucleic acids, amino acids, non coding RNAs"  << std::endl;
+    } else if (fileExtension == "ffn") {
+        std::cout << "File Extension detected: " << fileExtension << std::endl;
+        std::cout << "Assumed to be used generically to specify nucleic acids" << std::endl;
+    } else if (fileExtension == "faa" || fileExtension == "mpfa") {
+        std::cout << "File Extension detected: " << fileExtension << std::endl;
+        std::cout << "Assumed to contain (multiple) amino acid sequences" << std::endl;
+    } else if (fileExtension == "frn") {
+        std::cout << "File Extension detected: " << fileExtension << std::endl;
+        std::cout << "Assumed to contain non-coding RNA regions for a genome,\n"
+                     "e.g. tRNA, rRNA | File extensions: *.frn" << std::endl;
+    }
 }

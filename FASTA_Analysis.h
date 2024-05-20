@@ -6,6 +6,10 @@
 struct FASTA_Structure {
     std::string header;
     std::string sequence;
+    std::map<char, int> m_nucleotideCount;
+    bool PROTEIN_quick_and_dirty;
+    bool RNA_quick_and_dirty;
+    bool DNA_sure;
 };
 
 class FASTA_Analysis {
@@ -14,24 +18,19 @@ class FASTA_Analysis {
         FASTA_Analysis(const std::string &i_filename);
         ~FASTA_Analysis();
 
-        void const getFileExtensionText(const std::string &fileExtension);
-        std::vector<FASTA_Structure> readDataFile(const std::string& filename);
-
-    private:
-        std::map<char, int> m_nucleotideCount;
-        std::string header;
-        std::string sequence;
-        std::string m_file_extension;
-        bool protein_TF_QAD; // True/False - Quick and Dirty
-        bool protein_TF_inDetail; // True/False - in Detail analysis
-        bool DNA_TF_QAD; // True/False - Quick and Dirty
-        bool DNA_TF_inDetail; // True/False - in Detail analysis
-
-        //setter
-        // for that reason its private, as it should only be run by constructor!
-        static void initialize_nucleotideCount(std::map<char, int> &m_nucleotideCount);
 
         // getter
+        static void getFileExtensionText();
+        static std::vector<FASTA_Structure> readDataFile(const std::string& filename);
+        bool validateFileExtension();
         static std::string getFileExtension(const std::string& filename);
+
+        // setter
+        void evaluate_sequence_FASTA_file_QAD();
+        void set_m_nucleotideCount(int i);
+
+    private:
+        std::vector<FASTA_Structure> m_FASTA_Structure;
+        static std::string m_file_extension;
 };
 

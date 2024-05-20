@@ -6,12 +6,12 @@ FASTA_Analysis::FASTA_Analysis(const std::string &i_filename) {
     m_file_extension = getFileExtension(i_filename);
     getFileExtensionText();
     m_FASTA_Structure = readDataFile(i_filename);
-    evaluate_sequence_FASTA_file_QAD();
+    set_m_nucleotideCount_Values();
 }
 
 FASTA_Analysis::~FASTA_Analysis() = default;
 
-void FASTA_Analysis::set_m_nucleotideCount(int i) {
+void FASTA_Analysis::initialize_m_nucleotideCount(int i) {
     m_FASTA_Structure[i].m_nucleotideCount['A'] = 0; // DNA & Proteins (both)
     m_FASTA_Structure[i].m_nucleotideCount['B'] = 0; // DNA & Proteins (both)
     m_FASTA_Structure[i].m_nucleotideCount['C'] = 0; // DNA & Proteins (both)
@@ -83,41 +83,57 @@ std::string FASTA_Analysis::getFileExtension(const std::string& filename) {
 void FASTA_Analysis::getFileExtensionText() {
     std::cout << "File Extension detected: " << m_file_extension << std::endl;
     if (m_file_extension == "fasta" || m_file_extension == "fas" || m_file_extension == "fa") {
-        std::cout << "The following File extensions are generally considered\n"
-                     "to contain all possible forms of acids: *.fasta / *.fas / *.fa\n"
-                     "including nucleic acids, amino acids, non coding RNAs"  << std::endl;
+        std::cout << "It's assumed that this file may contain all possible forms of acids" << std::endl;
     } else if (m_file_extension == "ffn") {
-        std::cout << "Assumed to be used generically to specify nucleic acids" << std::endl;
+        std::cout << "Assumed to be used generically to specify nucleic acids." << std::endl;
     } else if (m_file_extension == "faa" || m_file_extension == "mpfa") {
-        std::cout << "Assumed to contain (multiple) amino acid sequences" << std::endl;
+        std::cout << "Assumed to contain (multiple) amino acid sequences." << std::endl;
     } else if (m_file_extension == "frn") {
-        std::cout << "Assumed to contain non-coding RNA regions for a genome,\n"
-                     "e.g. tRNA, rRNA | File extensions: *.frn" << std::endl;
+        std::cout << "Assumed to contain non-coding RNA regions for a genome, e.g. tRNA, rRNA" << std::endl;
     }
 }
 
-//struct FASTA_Structure {
-//    std::string header;
-//    std::string sequence;
-//    std::map<char, int> m_FASTA_Structure[i].m_nucleotideCount;
-//    bool PROTEIN_quick_and_dirty;
-//    bool RNA_quick_and_dirty;
-//    bool DNA_sure;
-//};
+void FASTA_Analysis::set_m_nucleotideCount_Values() {
+    for (int i = 0; i < m_FASTA_Structure.size(); i++) {
+        initialize_m_nucleotideCount(i);
+        int character_to_test = 0;
+        for(char nucleotide :  m_FASTA_Structure[i].sequence) {
+            if(nucleotide == m_FASTA_Structure[i].sequence[character_to_test]) {
+                m_FASTA_Structure[i].m_nucleotideCount[nucleotide]++;
+            }
+            character_to_test++;
+        } // end for loop # counting
+    } // end for loop
+}
 
-//void FASTA_Analysis::evaluate_sequence_FASTA_file_QAD() {
-//    for (size_t i = 0; i < m_FASTA_Structure.size(); ++i) {
-//        std::cout << "\n***********************************************\n\n";
-//        std::cout << "Sequence " << (i + 1) << ":" << std::endl;
-//        std::cout << "Header: " << m_FASTA_Structure[i].header << std::endl;
-//        std::cout << "Sequence: " << m_FASTA_Structure[i].sequence << std::endl;
-//        for(char nucleotide :  m_FASTA_Structure[i].sequence) {
-//            set_m_nucleotideCount(i);
-//            if (m_FASTA_Structure[i].sequence.find(nucleotide)) {
-//                m_FASTA_Structure[i].m_nucleotideCount[nucleotide]++;
-//                std::cout << "Nucleotide: " << nucleotide << "found!" << std::endl;
-//                std::cout << "n =" << m_FASTA_Structure[i].m_nucleotideCount[nucleotide] << std::endl;
-//            } // end if statement
-//        } // end for loop # counting
-//    } // end for loop
-//} // end of function
+void FASTA_Analysis::evaluate_sequence_FASTA_file_QAD() {
+    for (int i = 0; i < m_FASTA_Structure.size(); i++) {
+        if(m_FASTA_Structure[i].m_nucleotideCount['U'] >= 1) {
+            m_FASTA_Structure[i].RNA = true;
+        } else if(m_FASTA_Structure[i].m_nucleotideCount['E'] >= 1 ||
+                m_FASTA_Structure[i].m_nucleotideCount['F'] >= 1 ||
+                m_FASTA_Structure[i].m_nucleotideCount['I'] >= 1 ||
+                m_FASTA_Structure[i].m_nucleotideCount['L'] >= 1 ||
+                m_FASTA_Structure[i].m_nucleotideCount['P'] >= 1 ||
+                m_FASTA_Structure[i].m_nucleotideCount['Q'] >= 1 ||
+                m_FASTA_Structure[i].m_nucleotideCount['X'] >= 1 ||
+                m_FASTA_Structure[i].m_nucleotideCount['Z'] >= 1) {
+            m_FASTA_Structure[i].Protein = true;
+        } else if(!m_FASTA_Structure[i].DNA & !m_FASTA_Structure[i].DNA) {
+            int ATGC = 0;
+            ATGC = m_FASTA_Structure[i].m_nucleotideCount['A'] +
+                   m_FASTA_Structure[i].m_nucleotideCount['C'] +
+                   m_FASTA_Structure[i].m_nucleotideCount['G'] +
+                   m_FASTA_Structure[i].m_nucleotideCount['T'];
+            int sequence_length = 0;
+            sequence_length = m_FASTA_Structure[i].sequence.length();
+            if(sequence_length>=1) {
+                if(ATGC/sequence_length > 0.6) // random threshhold - just to be extra safe
+                    m_FASTA_Structure[i].DNA = true;
+            } else {
+                std::cout << "Couldn't figure out whether it's RNA, Protein or RNA";
+            } // end else
+        } // end if DNA
+    } // end for loop
+}
+

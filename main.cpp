@@ -79,7 +79,7 @@ int main(int argc, char *argv[]) {
     obj_FASTA_Basics = new FASTA_Analysis(filename);
 
 
-
+    std::cout << "Little Helper for breakpoint!" << std::endl; // delete later
     delete obj_FASTA_Basics;
     return 0;
 }

@@ -7,9 +7,7 @@ struct FASTA_Structure {
     std::string header;
     std::string sequence;
     std::map<char, int> m_nucleotideCount;
-    bool Protein = false;
-    bool RNA = false;
-    bool DNA = false;
+    std::string classification = "not set";
 };
 
 class FASTA_Analysis {
@@ -21,18 +19,23 @@ class FASTA_Analysis {
 
         // getter
         void getFileExtensionText();
-        std::vector<FASTA_Structure> readDataFile(const std::string& filename);
-        bool validateFileExtension();
-        std::string getFileExtension(const std::string& filename);
 
         // setter
-        void evaluate_sequence_FASTA_file_QAD();
-        void initialize_m_nucleotideCount(int i);
-        void set_m_nucleotideCount_Values();
+        void evaluate_sequence_FASTA_File();
 
 
-private:
+
+
+    private:
         std::vector<FASTA_Structure> m_FASTA_Structure;
         std::string m_file_extension;
+
+        //getter - internal helper functions
+        std::vector<FASTA_Structure> readDataFile(const std::string& filename);
+        std::string getFileExtension(const std::string& filename);
+
+        //setter - internal helper functions
+        void initialize_m_nucleotideCount(int i);
+        void set_m_nucleotideCount_Values();
 };
 

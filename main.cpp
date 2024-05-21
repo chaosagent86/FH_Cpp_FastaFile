@@ -77,6 +77,8 @@ int main(int argc, char *argv[]) {
 
     FASTA_Analysis *obj_FASTA_Basics;
     obj_FASTA_Basics = new FASTA_Analysis(filename);
+    // Ausgabe der Analyse Daten -----
+    //obj_FASTA_Basics->
 
 
     std::cout << "Little Helper for breakpoint!" << std::endl; // delete later

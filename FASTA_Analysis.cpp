@@ -4,9 +4,10 @@
 
 FASTA_Analysis::FASTA_Analysis(const std::string &i_filename) {
     m_file_extension = getFileExtension(i_filename);
-    getFileExtensionText();
+    //getFileExtensionText();
     m_FASTA_Structure = readDataFile(i_filename);
     set_m_nucleotideCount_Values();
+    evaluate_sequence_FASTA_File();
 }
 
 FASTA_Analysis::~FASTA_Analysis() = default;
@@ -106,10 +107,10 @@ void FASTA_Analysis::set_m_nucleotideCount_Values() {
     } // end for loop
 }
 
-void FASTA_Analysis::evaluate_sequence_FASTA_file_QAD() {
+void FASTA_Analysis::evaluate_sequence_FASTA_File() {
     for (int i = 0; i < m_FASTA_Structure.size(); i++) {
         if(m_FASTA_Structure[i].m_nucleotideCount['U'] >= 1) {
-            m_FASTA_Structure[i].RNA = true;
+            m_FASTA_Structure[i].classification = "RNA";
         } else if(m_FASTA_Structure[i].m_nucleotideCount['E'] >= 1 ||
                 m_FASTA_Structure[i].m_nucleotideCount['F'] >= 1 ||
                 m_FASTA_Structure[i].m_nucleotideCount['I'] >= 1 ||
@@ -118,8 +119,8 @@ void FASTA_Analysis::evaluate_sequence_FASTA_file_QAD() {
                 m_FASTA_Structure[i].m_nucleotideCount['Q'] >= 1 ||
                 m_FASTA_Structure[i].m_nucleotideCount['X'] >= 1 ||
                 m_FASTA_Structure[i].m_nucleotideCount['Z'] >= 1) {
-            m_FASTA_Structure[i].Protein = true;
-        } else if(!m_FASTA_Structure[i].DNA & !m_FASTA_Structure[i].DNA) {
+            m_FASTA_Structure[i].classification = "Protein";
+        } else if(m_FASTA_Structure[i].classification != "RNA" & m_FASTA_Structure[i].classification != "Protein") {
             int ATGC = 0;
             ATGC = m_FASTA_Structure[i].m_nucleotideCount['A'] +
                    m_FASTA_Structure[i].m_nucleotideCount['C'] +
@@ -129,9 +130,10 @@ void FASTA_Analysis::evaluate_sequence_FASTA_file_QAD() {
             sequence_length = m_FASTA_Structure[i].sequence.length();
             if(sequence_length>=1) {
                 if(ATGC/sequence_length > 0.6) // random threshhold - just to be extra safe
-                    m_FASTA_Structure[i].DNA = true;
+                    m_FASTA_Structure[i].classification = "DNA";
             } else {
                 std::cout << "Couldn't figure out whether it's RNA, Protein or RNA";
+                m_FASTA_Structure[i].classification = "error - unable to set";
             } // end else
         } // end if DNA
     } // end for loop

@@ -8,4 +8,8 @@ include_directories(.)
 add_executable(fasta_softwareentwicklung
         main.cpp
         FASTA_Analysis.h
-        FASTA_Analysis.cpp)
+        FASTA_Analysis.cpp
+        DNA.cpp
+        DNA.h
+        Protein.cpp
+        Protein.h)

@@ -4,7 +4,7 @@
 
 FASTA_Analysis::FASTA_Analysis(const std::string &i_filename) {
     m_file_extension = getFileExtension(i_filename);
-    //getFileExtensionText();
+    getFileExtensionText();
     m_FASTA_Structure = readDataFile(i_filename);
     set_m_nucleotideCount_Values();
     evaluate_sequence_FASTA_File();
@@ -41,15 +41,15 @@ void FASTA_Analysis::initialize_m_nucleotideCount(int i) {
 
 std::vector<FASTA_Structure> FASTA_Analysis::readDataFile(const std::string& filename) {
     std::vector<FASTA_Structure> sequences;
-    std::ifstream file(filename);
-    if (!file.is_open()) {
+    std::ifstream in_file(filename);
+    if (!in_file.is_open()) {
         std::cerr << "The file provided couldn't be opened: " << filename << std::endl;
         return sequences; // Return empty vector on error
     }
 
     std::string line;
     FASTA_Structure currentSeq;
-    while (std::getline(file, line)) {
+    while (std::getline(in_file, line)) {
         if (line.empty())
             continue; // Skip empty lines
 
@@ -69,7 +69,7 @@ std::vector<FASTA_Structure> FASTA_Analysis::readDataFile(const std::string& fil
         sequences.push_back(currentSeq);
     }
 
-    file.close();
+    in_file.close();
     return sequences;
 }
 
@@ -138,4 +138,63 @@ void FASTA_Analysis::evaluate_sequence_FASTA_File() {
         } // end if DNA
     } // end for loop
 }
+
+const std::vector<FASTA_Structure> &FASTA_Analysis::getMFastaStructure() const {
+    return m_FASTA_Structure;
+}
+
+const std::string &FASTA_Analysis::getMFileExtension() const {
+    return m_file_extension;
+}
+
+const bool FASTA_Analysis::ValidateIfFileContentMayBeCorrect() const {
+    std::string Content;
+    Content = EvaluateIfDNAorProteinDetected();
+
+    if (m_file_extension == "fasta" || m_file_extension == "fas" || m_file_extension == "fa") {
+        return true; // may contain just everything - thus - always true
+    } else if (m_file_extension == "ffn") {
+        if(Content == "DNA")
+            return true;
+        else
+            return false;
+    } else if (m_file_extension == "faa" || m_file_extension == "mpfa") {
+        if(Content == "Protein")
+            return true;
+        else
+            return false;
+    } else if (m_file_extension == "frn") {
+        if(Content == "RNA")
+            return true;
+        else
+            return false;
+    }
+    return false;
+}
+
+const std::string FASTA_Analysis::EvaluateIfDNAorProteinDetected() const {
+    int DNA = 0;
+    int Protein = 0;
+    int RNA = 0;
+
+    for (int i = 0; i < m_FASTA_Structure.size(); i++) {
+        if(m_FASTA_Structure[i].classification == "DNA")
+            DNA++;
+        if(m_FASTA_Structure[i].classification == "Protein")
+            Protein++;
+        if(m_FASTA_Structure[i].classification == "RNA")
+            RNA++;
+    }
+
+    if(DNA >= 1 && Protein == 0 && RNA == 0)
+        return "DNA";
+    if(DNA == 0 && Protein >= 1 && RNA == 0)
+        return "Protein";
+    if(DNA == 0 && Protein == 0 && RNA >= 0)
+        return "RNA";
+    else
+        return "undefinied";
+}
+
+
 

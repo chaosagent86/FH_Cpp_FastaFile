@@ -7,6 +7,6 @@ public:
     DNA(const std::string &iFilename);
     ~DNA();
 
-    int Calculate_GC_Content(const FASTA_Structure& fasta);
+    void Calculate_GC_Content();
 };
 

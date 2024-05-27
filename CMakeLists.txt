@@ -6,10 +6,10 @@ set(CMAKE_CXX_STANDARD 14)
 include_directories(.)
 
 add_executable(fasta_softwareentwicklung
-        main.cpp
         FASTA_Analysis.h
         FASTA_Analysis.cpp
         DNA.cpp
         DNA.h
         Protein.cpp
-        Protein.h)
+        Protein.h
+        main.cpp)

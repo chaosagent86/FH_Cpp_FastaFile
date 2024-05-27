@@ -9,15 +9,21 @@ DNA::DNA(const std::string &iFilename) : FASTA_Analysis(iFilename) {
     ;
 }
 
-int DNA::Calculate_GC_Content(const FASTA_Structure& fasta) {
+//int DNA::Calculate_GC_Content(const FASTA_Structure& fasta) {
+void DNA::Calculate_GC_Content() {
+    int gc = 0;
+    int seq_length = 0;
     int gc_content = 0;
-    int gc_total_bases = 0;
 
-    gc_total_bases = fasta.m_nucleotideCount.at('G') + fasta.m_nucleotideCount.at('C');
-    int seq_length = fasta.sequence.length();
-
-    gc_content = gc_total_bases*100/seq_length;
-
-    return gc_content;
+    for(int i = 0; i < FASTA_Analysis::m_FASTA_Structure.size(); i++) {
+//        if (m_FASTA_Structure[i].classification != "DNA")
+//            continue;
+        std::cout << "*** New Header ***" << std::endl;
+        std::cout << ">" << m_FASTA_Structure[i].header << std::endl;
+        gc = m_FASTA_Structure[i].m_nucleotideCount['G'] + m_FASTA_Structure[i].m_nucleotideCount['C'];
+        seq_length = m_FASTA_Structure[i].sequence.length();
+        gc_content = gc*100/seq_length;
+        std::cout << "GC Content: " << gc_content << " %" << std::endl;
+    }
 }
 

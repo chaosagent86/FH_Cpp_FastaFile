@@ -21,17 +21,18 @@ class FASTA_Analysis {
         void getFileExtensionText();
         const std::vector<FASTA_Structure> &getMFastaStructure() const;
         const std::string &getMFileExtension() const;
+        const bool get_evaluation_file_content_correct_or_not();
+        std::vector<FASTA_Structure> readDataFile(const std::string& filename);
 
         // setter
         void evaluate_sequence_FASTA_File();
 
 
     private:
-
         std::string m_file_extension;
 
-    //getter - internal helper functions
-        std::vector<FASTA_Structure> readDataFile(const std::string& filename);
+        //getter - internal helper functions
+
         std::string getFileExtension(const std::string& filename);
 
         //setter - internal helper functions
@@ -40,7 +41,7 @@ class FASTA_Analysis {
         const bool ValidateIfFileContentMayBeCorrect() const;
         const std::string EvaluateIfDNAorProteinDetected() const;
 
-protected:
-    std::vector<FASTA_Structure> m_FASTA_Structure;
+    protected:
+        std::vector<FASTA_Structure> m_FASTA_Structure;
 };
 

@@ -4,13 +4,21 @@
 
 FASTA_Analysis::FASTA_Analysis(const std::string &i_filename) {
     m_file_extension = getFileExtension(i_filename);
-    getFileExtensionText();
     m_FASTA_Structure = readDataFile(i_filename);
-    set_m_nucleotideCount_Values();
-    evaluate_sequence_FASTA_File();
+    set_m_nucleotideCount_Values();3
 }
 
 FASTA_Analysis::~FASTA_Analysis() = default;
+
+const bool FASTA_Analysis::get_evaluation_file_content_correct_or_not() {
+    set_m_nucleotideCount_Values();
+    evaluate_sequence_FASTA_File();
+    if(!ValidateIfFileContentMayBeCorrect()) {
+        return false;
+    }
+    return true;
+}
+
 
 void FASTA_Analysis::initialize_m_nucleotideCount(int i) {
     m_FASTA_Structure[i].m_nucleotideCount['A'] = 0; // DNA & Proteins (both)

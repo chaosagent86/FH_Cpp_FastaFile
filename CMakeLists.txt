@@ -12,4 +12,6 @@ add_executable(fasta_softwareentwicklung
         DNA.h
         Protein.cpp
         Protein.h
-        main.cpp)
+        main.cpp
+        RNA.cpp
+        RNA.h)

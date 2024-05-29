@@ -8,5 +8,6 @@ public:
     ~DNA();
 
     void Calculate_GC_Content();
+    void Translate_into_protein_sequence();
 };
 

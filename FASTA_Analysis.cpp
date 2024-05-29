@@ -5,7 +5,8 @@
 FASTA_Analysis::FASTA_Analysis(const std::string &i_filename) {
     m_file_extension = getFileExtension(i_filename);
     m_FASTA_Structure = readDataFile(i_filename);
-    set_m_nucleotideCount_Values();3
+    set_m_nucleotideCount_Values();
+    evaluate_sequence_FASTA_File();
 }
 
 FASTA_Analysis::~FASTA_Analysis() = default;

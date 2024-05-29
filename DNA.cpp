@@ -15,15 +15,22 @@ void DNA::Calculate_GC_Content() {
     int seq_length = 0;
     int gc_content = 0;
 
-    for(int i = 0; i < FASTA_Analysis::m_FASTA_Structure.size(); i++) {
-//        if (m_FASTA_Structure[i].classification != "DNA")
-//            continue;
+    for(auto & i : FASTA_Analysis::m_FASTA_Structure) {
+        if (i.classification != "DNA")
+            continue;
         std::cout << "*** New Header ***" << std::endl;
-        std::cout << ">" << m_FASTA_Structure[i].header << std::endl;
-        gc = m_FASTA_Structure[i].m_nucleotideCount['G'] + m_FASTA_Structure[i].m_nucleotideCount['C'];
-        seq_length = m_FASTA_Structure[i].sequence.length();
+        std::cout << ">" << i.header << std::endl;
+        gc = i.m_nucleotideCount['G'] + i.m_nucleotideCount['C'];
+        seq_length = i.sequence.length();
         gc_content = gc*100/seq_length;
         std::cout << "GC Content: " << gc_content << " %" << std::endl;
     }
 }
 
+void DNA::Translate_into_protein_sequence() {
+    std::cout << "function void Translate_into_protein_sequence() not yet implemented!" << std::endl;
+}
+
+//for(int i = 0; i < FASTA_Analysis::m_FASTA_Structure.size(); i++) {
+//if (m_FASTA_Structure[i].classification != "DNA")
+//continue;

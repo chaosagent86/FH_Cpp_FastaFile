@@ -3,6 +3,7 @@
 
 #include "FASTA_Analysis.h"
 #include "DNA.h"
+#include "RNA.h"
 
 void show_help();
 void show_menu(bool DNA_expected = false, bool Protein_expected = false, bool RNA_expected = false);
@@ -63,12 +64,13 @@ int main(int argc, char *argv[]) {
     FASTA_Analysis *obj_FASTA_Basics;
     obj_FASTA_Basics = new FASTA_Analysis(filename);
 
-
-
     /* Filename on the very first view seems for me to be completely unnecessary,
      * but I did not understand how to manage it without 'filename' as parameter */
     DNA *obj_DNA;
     obj_DNA = new DNA(filename);
+
+    RNA *obj_RNA;
+    obj_RNA = new RNA(filename);
 
     bool result_evaluation;
     result_evaluation = obj_FASTA_Basics->get_evaluation_file_content_correct_or_not();
@@ -91,19 +93,13 @@ int main(int argc, char *argv[]) {
     for(const auto& step : obj_FASTA_Basics->getMFastaStructure()) {
         if (step.classification == "DNA") {
             DNA_expected = true;
-            std::cout << step.header << std::endl;
-            std::cout << "DNA expected = true!" << std::endl;
             continue;
         }
         if (step.classification == "Protein") {
             Protein_expected = true;
-            std::cout << step.header << std::endl;
-            std::cout << "Protein expected = true!" << std::endl;
             continue;
         }
         if (step.classification == "RNA") {
-            std::cout << step.header << std::endl;
-            std::cout << "RNA expected = true!" << std::endl;
             RNA_expected = true;
             continue;
         }
@@ -113,6 +109,9 @@ int main(int argc, char *argv[]) {
 
     bool menu_should_run = true;
     char input = 0;
+
+    std::string DNA_error_message = "You have chosen an inactive option (no DNA sequence available!) Please choose again!";
+    std::string RNA_error_message = "You have chosen an inactive option (no RNA sequence available!) Please choose again!";
 
     while (menu_should_run) {
         std::cout << " ~ ~ ~ ~ ~ ~ ~ INPUT NEEDED ~ ~ ~ ~ ~ ~ ~ \n" << std::endl;
@@ -130,11 +129,29 @@ int main(int argc, char *argv[]) {
                 break;
             case '3':
                 if(DNA_expected) {
-                    std::cout << "option 3 chosen - calc gc content" << std::endl;
+                    std::cout << "option " << input << " chosen - calc gc content" << std::endl;
                     obj_DNA->Calculate_GC_Content();
                     break;
                 } else {
-                    std::cerr << "\nYou have chosen an inactive option (no DNA sequence available!) Please choose again!" << std::endl;
+                    std::cerr << DNA_error_message << std::endl;
+                    break;
+                }
+            case '4':
+                if(DNA_expected) {
+                    std::cout << "option " << input << " chosen - translate into protein sequence (first forward reading frame)" << std::endl;
+                    obj_DNA->Translate_into_protein_sequence();
+                    break;
+                } else {
+                    std::cerr << DNA_error_message << std::endl;
+                    break;
+                }
+            case '5':
+                if(RNA_expected) {
+                    std::cout << "option " << input << " chosen - search for open reading frames" << std::endl;
+                    obj_RNA->findORFs();
+                    break;
+                } else {
+                    std::cerr << RNA_error_message << std::endl;
                     break;
                 }
             case '9':
@@ -147,7 +164,8 @@ int main(int argc, char *argv[]) {
 
     std::cout << "Little Helper for breakpoint!" << std::endl; // delete later
     delete obj_FASTA_Basics;
-    delete obj_DNA;
+    delete obj_DNA; //unnötig, weil vll. automatisch gelöscht wenn überklasse gelöscht wird?
+    delete obj_RNA; //unnötig, weil vll. automatisch gelöscht wenn überklasse gelöscht wird?
     return 0;
 }
 
@@ -158,8 +176,15 @@ void show_menu(bool DNA_expected, bool Protein_expected, bool RNA_expected) {
     std::cout << "2\t - Write output (same as in 1!)" << std::endl;
     if(DNA_expected) {
         std::cout << "3\t - Calculate GC-Content for each DNA-Sequence (everything else is ignored)" << std::endl;
+        std::cout << "4\t - NOT IMPLEMENTED YET - Translate DNA Sequence into Protein Sequence (first forward reading frame)" << std::endl;
     } else {
         std::cout << "3\t - [inactive!] Calculate GC-Content for each DNA-Sequence (everything else is ignored)" << std::endl;
+        std::cout << "4\t - [inactive!] NOT IMPLEMENTED YET - Translate DNA Sequence into Protein Sequence (first forward reading frame)" << std::endl;
+    }
+    if(RNA_expected)  {
+        std::cout << "5\t - Search for open reading frames" << std::endl;
+    } else {
+        std::cout << "5\t - [inactive!] Search for open reading frames" << std::endl;
     }
     std::cout << "99\t - End program" << std::endl;
 }
@@ -204,6 +229,8 @@ void show_help() {
 }
 
 void write_output(FASTA_Analysis *obj_FASTA_Basics, std::string &output_filename) {
+
+
     std::cout << "nothing happening so far as it is throwing an strange exception!" << std::endl;
     //        std::cout << "TEST:" << file_extension << std::endl;
 //        //Try to write an analysis file

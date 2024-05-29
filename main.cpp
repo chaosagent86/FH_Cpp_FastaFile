@@ -15,7 +15,7 @@ int main(int argc, char *argv[]) {
     std::cout << "\n";
     std::cout << "****************************************" << std::endl;
     std::cout << "** FASTA Analysis Platform v0.9      **" << std::endl;
-    std::cout << "** Last Update: 2024-05-26           **" << std::endl;
+    std::cout << "** Last Update: 2024-05-29           **" << std::endl;
     std::cout << "***************************************\n" << std::endl;
 
 

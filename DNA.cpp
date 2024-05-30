@@ -2,11 +2,10 @@
 #include "DNA.h"
 
 DNA::~DNA() {
-    std::cout << "Destructor destroyed at least something :-)" << std::endl;
 }
 
 DNA::DNA(const std::string &iFilename) : FASTA_Analysis(iFilename) {
-    ;
+
 }
 
 //int DNA::Calculate_GC_Content(const FASTA_Structure& fasta) {

@@ -2,14 +2,55 @@
 
 
 
-FASTA_Analysis::FASTA_Analysis(const std::string &i_filename) {
-    m_file_extension = getFileExtension(i_filename);
-    m_FASTA_Structure = readDataFile(i_filename);
+FASTA_Analysis::FASTA_Analysis(const std::string &i_FASTA_filename) {
+    m_file_extension = getFileExtension(i_FASTA_filename);
+    m_FASTA_Structure = readDataFile(i_FASTA_filename);
     set_m_nucleotideCount_Values();
     evaluate_sequence_FASTA_File();
+    /* Dieser Teil unterhalb funktioniert wunderbar im Debug-Modus - aber aus mir nicht erfindlichen Gründen NICHT
+     * wenn er 'regulär' ausgeführt wird - hier endet die Ausführung dann automatisch nach erscheinen der
+     * Startmeldung mit 'FASTA Analysis Tool etc.'
+     * Es erscheint kein Menü oder dergleichen
+     * Ich konnte beim Debuggen auch keinerlei Fehler oder ähnliches erkennen.
+     * Das Problem scheint beim Einlesen der readCodonTable() zu liegen
+     * Aber das funktioniert ja beim Debuggen.....
+     * Auch der Inhalt der Variablen scheint zu passen nachdem die beiden unteren Funktionen durchgelaufen sind
+     * m_CodonTable = readCodonTable();
+     * m_CodonTable_reverse = reverse_CodonTable();
+     * ************************/
+
+//    m_CodonTable = readCodonTable();
+//    std::cout << "m_CodonTable created" << std::endl;
+//    m_CodonTable_reverse = reverse_CodonTable();
+//    std::cout << "m_CodonTable_reverse created" << std::endl;
 }
 
 FASTA_Analysis::~FASTA_Analysis() = default;
+
+std::unordered_map<std::string, char> FASTA_Analysis::readCodonTable() {
+    std::string map_filename = "..\\mapping_DNA_Protein.txt";
+    std::string codon;
+    char aminoAcid;
+    std::unordered_map<std::string, char> codonTable;
+    std::ifstream file(map_filename);
+    if(!file.is_open()) {
+        std::cerr << "Could not open mapping file!" << std::endl;
+    }
+    while (file >> codon >> aminoAcid) {
+        codonTable[codon] = aminoAcid;
+    }
+    file.close();
+
+    return codonTable;
+}
+
+std::unordered_map<char, std::vector<std::string>> FASTA_Analysis::reverse_CodonTable() {
+    std::unordered_map<char, std::vector<std::string>> reverseCodonTable;
+    for (const auto& pair : m_CodonTable) {
+        reverseCodonTable[pair.second].push_back(pair.first);
+    }
+    return reverseCodonTable;
+}
 
 const bool FASTA_Analysis::get_evaluation_file_content_correct_or_not() {
     set_m_nucleotideCount_Values();

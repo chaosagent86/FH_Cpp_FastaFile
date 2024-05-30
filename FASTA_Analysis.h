@@ -2,7 +2,9 @@
 
 #include <iostream>
 #include <map>
+#include <unordered_map>
 #include <vector>
+#include <string>
 #include <fstream>
 
 struct FASTA_Structure {
@@ -23,16 +25,15 @@ class FASTA_Analysis {
         const std::string &getMFileExtension() const;
         const bool get_evaluation_file_content_correct_or_not();
         std::vector<FASTA_Structure> readDataFile(const std::string& filename);
+        std::unordered_map<std::string, char> readCodonTable();
+        std::unordered_map<char, std::vector<std::string>> reverse_CodonTable();
 
         // setter
         void evaluate_sequence_FASTA_File();
 
 
     private:
-        std::string m_file_extension;
-
         //getter - internal helper functions
-
         std::string getFileExtension(const std::string& filename);
 
         //setter - internal helper functions
@@ -41,7 +42,10 @@ class FASTA_Analysis {
         const bool ValidateIfFileContentMayBeCorrect() const;
         const std::string EvaluateIfDNAorProteinDetected() const;
 
-    protected:
-        std::vector<FASTA_Structure> m_FASTA_Structure;
-};
 
+    protected:
+        std::string m_file_extension;
+        std::vector<FASTA_Structure> m_FASTA_Structure;
+        std::unordered_map<std::string, char> m_CodonTable;
+        std::unordered_map<char, std::vector<std::string>> m_CodonTable_reverse;
+};

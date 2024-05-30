@@ -29,9 +29,9 @@ void RNA::findORFs() {
                 if (isStopCodon(codon)) {
                     std::cout << step.sequence.substr(i, j - i + 3) << std::endl;
                     break;
-                }
-            }
-        }
-    }
+                } // end if
+            } // end inner for
+        } // end outer for
+    } // end primary for
 }
 

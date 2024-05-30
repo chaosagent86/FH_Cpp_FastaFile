@@ -17,7 +17,6 @@ int main(int argc, char *argv[]) {
     std::cout << "** Last Update: 2024-05-29           **" << std::endl;
     std::cout << "***************************************\n" << std::endl;
 
-
     std::string filename;
     bool arg_input_file = false;
     bool arg_output_file = false;
@@ -199,8 +198,8 @@ int main(int argc, char *argv[]) {
     }
 
     delete obj_FASTA_Basics;
-    delete obj_DNA; //unnötig, weil vll. automatisch gelöscht, wenn überklasse gelöscht wird?
-    delete obj_RNA; //unnötig, weil vll. automatisch gelöscht, wenn überklasse gelöscht wird?
+    delete obj_DNA;
+    delete obj_RNA;
     return 0;
 }
 
@@ -259,7 +258,6 @@ void show_help() {
     std::cout << "\t\t\t-) *.ffn (nucleic acids supposed)" << std::endl;
     std::cout << "\t\t\t-) *.faa / *.mpfa (amino acids supposed)" << std::endl;
     std::cout << "\t\t\t-) *.frn (ribosomic nucleic acids supposed)" << std::endl;
-    std::cout << "--show_me_everything \t\t\t just do EVERYTHING (!) which seems possible (or at least is implemented)" << std::endl;
     std::cout << "--output <filename> \t\t\t In case of 'write_file_again please also prive output filename!"  << std::endl;
     std::cout << "*************************************************************" << std::endl  << std::endl;
 }

@@ -29,7 +29,3 @@ void DNA::Calculate_GC_Content() {
 void DNA::Translate_into_protein_sequence() {
     std::cout << "function void Translate_into_protein_sequence() not yet implemented!" << std::endl;
 }
-
-//for(int i = 0; i < FASTA_Analysis::m_FASTA_Structure.size(); i++) {
-//if (m_FASTA_Structure[i].classification != "DNA")
-//continue;
